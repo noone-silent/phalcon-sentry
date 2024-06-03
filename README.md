@@ -1,6 +1,6 @@
 # Phalcon Sentry
 
-[![Packagist Version](https://img.shields.io/packagist/v/noone-silent/phalcon-sentry)]
+![Packagist Version](https://img.shields.io/packagist/v/noone-silent/phalcon-sentry)
 
 This directory contains the PHP source code for the Phalcon Sentry integration.
 

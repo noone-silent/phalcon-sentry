@@ -169,6 +169,10 @@ class ServiceProvider implements ServiceProviderInterface
 
     private function firstSpan(DiInterface $di): void
     {
+        if ($di->has('request') === false) {
+            return;
+        }
+
         $span = $this->hub?->getSpan();
         if ($span !== null) {
             return;
