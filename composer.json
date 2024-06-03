@@ -1,0 +1,49 @@
+{
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "name": "noone-silent/phalcon-sentry",
+  "description": "Sentry integration for the Phalcon Framework",
+  "keywords": [
+    "phalcon",
+    "sentry",
+    "integration"
+  ],
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/noone-silent/phalcon-sentry",
+  "authors": [
+    {
+      "name": "n[oO]ne",
+      "email": "lominum@protonmail.com"
+    }
+  ],
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan",
+    "phpcs": "vendor/bin/php-cs-fixer fix",
+    "push-check": [
+      "@phpstan",
+      "@phpcs"
+    ]
+  },
+  "autoload": {
+    "psr-4": {
+      "Phalcon\\Sentry\\": "src/"
+    }
+  },
+  "require-dev": {
+    "codeception/codeception": "^5.1.2",
+    "codeception/module-phalcon5": "^v2.0.1",
+    "friendsofphp/php-cs-fixer": "^3.58",
+    "phalcon/ide-stubs": "^v5.0.0",
+    "phpstan/phpstan": "1.10.*",
+    "sentry/sentry": "^4.7"
+  },
+  "require": {
+    "php": ">= 8.0",
+    "ext-phalcon": "^5.0"
+  },
+  "suggest": {
+    "sentry/sentry": "Use version 4.* for best compatility."
+  }
+}
