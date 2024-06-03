@@ -17,6 +17,7 @@ use function Sentry\getTraceparent;
 class Sentry extends AbstractInjectionAware
 {
     public const DEFAULT_HELPER_NAME = 'sentryHelper';
+    public const DEFAULT_SENTRY_SCRIPT = 'https://browser.sentry-cdn.com/8.7.0/bundle.tracing.replay.feedback.min.js';
 
     private static Config $config;
 
@@ -75,18 +76,14 @@ class Sentry extends AbstractInjectionAware
     /**
      * @param string[] $integrations
      */
-    public static function getScript(array $integrations, string $scriptUrl): string
+    public static function getScript(array $integrations = [], ?string $scriptUrl = null): string
     {
-        $viewOptions = [];
-        if (self::$config !== null) {
-            $viewOptions = self::$config->path('sentry.view', []);
-            if (count($viewOptions) === 0) {
-                $viewOptions = self::$config->path('sentry.options', []);
-            }
+        $viewOptions = self::$config->path('sentry.view', []);
+        if (count($viewOptions) === 0) {
+            $viewOptions = self::$config->path('sentry.options', []);
         }
 
         $viewOptions = $viewOptions instanceof Config ? $viewOptions->toArray() : $viewOptions;
-
         if (count($viewOptions) === 0) {
             return '';
         }
@@ -100,8 +97,9 @@ class Sentry extends AbstractInjectionAware
             "\n",
             [
                 sprintf(
-                    '<script src="%s" crossorigin="anonymous"></script>',
-                    $scriptUrl
+                    '<script src="%1$s" %2$s crossorigin="anonymous"></script>',
+                    self::getScriptUrl($scriptUrl),
+                    self::getIntegrityAttribute()
                 ),
                 sprintf(
                     '<script>window.addEventListener("DOMContentLoaded", () => {Sentry.init(%s)});</script>',
@@ -131,5 +129,27 @@ class Sentry extends AbstractInjectionAware
             ', integrations: [' . implode(',', $integrations) . ']}',
             -1
         );
+    }
+
+    private static function getScriptUrl(?string $scriptUrl = null): string
+    {
+        if ($scriptUrl !== null && trim($scriptUrl) !== '') {
+            return $scriptUrl;
+        }
+
+        return self::$config->path(
+            'sentry.browser.script',
+            self::DEFAULT_SENTRY_SCRIPT
+        );
+    }
+
+    private static function getIntegrityAttribute(): string
+    {
+        if (self::$config->path('sentry.browser.addSha', false) === false) {
+            return '';
+        }
+
+        $sha = self::$config->path('sentry.browser.sha', '');
+        return trim($sha) === '' ? '' : ' integrity="' . $sha . '"';
     }
 }

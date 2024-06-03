@@ -38,6 +38,7 @@ $di->register(
 ```
 
 If you're using the Volt template engine, you can use the provided helper to place scripts and tags.
+The name of `sentryHelper` is configurable in `config/sentry.php`.
 
 ```php
 // Add this between your <head></head>
@@ -57,3 +58,9 @@ You can also pass options to the `getScript()` helper:
     static_url('/js/bundle.tracing.min.js')
 ) }}
 ```
+
+> [!NOTICE]
+> If you do not self-host the sentry browser script,
+> you should add `browser.sentry-cdn.com` to your allowed `script-src`.
+>
+> You can read more about this here: [Sentry Content Security Policy](https://docs.sentry.io/platforms/javascript/install/loader/#content-security-policy)

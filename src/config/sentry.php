@@ -30,5 +30,13 @@ return [
         'view'    => [
             'dsn' => null,
         ],
+        'browser' => [
+            // You can find all possible scripts here: https://docs.sentry.io/platforms/javascript/install/loader/#cdn
+            'script' => 'https://browser.sentry-cdn.com/8.7.0/bundle.tracing.replay.feedback.min.js',
+            // Should the sha of the above script be added to the script?
+            'addSha' => true,
+            // Set the sha value of the script here.
+            'sha'    => 'sha384-EdTlDs1y0B2z6oDPxEhsi9MkH/ilAGCs4oLmreRceSbJ2TlSjo5020c315FWNIYJ',
+        ],
     ],
 ];
