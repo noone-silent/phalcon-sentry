@@ -53,11 +53,6 @@ class DBQueryEventHandler extends AbstractEventHandler
         unset($this->spans[$id]);
     }
 
-    public function getOpenSpans(): array
-    {
-        return $this->spans;
-    }
-
     private function getDriver(AbstractPdo $db): string
     {
         return match (true) {

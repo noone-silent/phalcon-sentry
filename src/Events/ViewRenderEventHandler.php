@@ -39,9 +39,4 @@ class ViewRenderEventHandler extends AbstractEventHandler
         $span?->finish();
         unset($this->spans[$view->getActiveRenderPath()]);
     }
-
-    public function getOpenSpans(): array
-    {
-        return $this->spans;
-    }
 }

@@ -13,11 +13,11 @@ use Sentry\Tracing\Span;
 class AbstractEventHandler extends Injectable implements EventHandlerInterface
 {
     /** @var Span[] */
-    private array $spans = [];
+    protected array $spans = [];
 
-    private Config $config;
+    protected Config $config;
 
-    private ?HubInterface $hub;
+    protected ?HubInterface $hub;
 
     public function __construct(DiInterface $container, ?HubInterface $hub, Config $config)
     {
