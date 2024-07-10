@@ -212,7 +212,7 @@ class ServiceProvider implements ServiceProviderInterface
             return;
         }
 
-        $services = (array)$config->path('options.cache.services', ['cache']);
+        $services = $config->path('options.cache.services', ['cache']);
         foreach ($services as $service) {
             $cache = $di->get($service);
             if ($cache instanceof AbstractCache === false) {
