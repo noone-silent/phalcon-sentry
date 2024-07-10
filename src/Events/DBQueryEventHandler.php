@@ -62,24 +62,4 @@ class DBQueryEventHandler extends AbstractEventHandler
             default => 'other_sql',
         };
     }
-
-    /**
-     * @return string[]
-     */
-    private function getBacktrace(): array
-    {
-        $stack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 50);
-        array_shift($stack);
-
-        $sources = [];
-        foreach ($stack as $item) {
-            if (empty($item['line']) === true || empty($item['file']) === true) {
-                continue;
-            }
-
-            $sources[] = "at {$item['file']}:{$item['line']}";
-        }
-
-        return array_values(array_filter($sources));
-    }
 }

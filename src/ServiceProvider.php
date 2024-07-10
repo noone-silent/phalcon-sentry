@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Sentry;
 
+use Phalcon\Cache\AbstractCache;
 use Phalcon\Config\Adapter\Ini;
 use Phalcon\Config\Adapter\Php;
 use Phalcon\Config\Adapter\Yaml;
@@ -12,6 +13,7 @@ use Phalcon\Config\Exception;
 use Phalcon\Db\Adapter\Pdo\AbstractPdo;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\ServiceProviderInterface;
+use Phalcon\Events\EventsAwareInterface;
 use Phalcon\Events\Manager;
 use Phalcon\Http\RequestInterface;
 use Phalcon\Http\ResponseInterface;
@@ -199,8 +201,46 @@ class ServiceProvider implements ServiceProviderInterface
 
     private function attach(DiInterface $di, Config $config): void
     {
+        $this->attachCache($di, $config);
         $this->attachDb($di, $config);
         $this->attachView($di, $config);
+    }
+
+    private function attachCache(DiInterface $di, Config $config): void
+    {
+        if ($config->get('cache', true) === false || $di->has('cache') === false) {
+            return;
+        }
+
+        $services = (array)$config->path('options.cache.services', ['cache']);
+        foreach ($services as $service) {
+            $cache = $di->get($service);
+            if ($cache instanceof AbstractCache === false) {
+                captureMessage(
+                    sprintf(
+                        'phalcon-sentry: service %s needs to be an instance of AbstractCache',
+                        $service
+                    )
+                );
+
+                continue;
+            }
+
+            // we need at least Phalcon 5.8.* for that
+            if ($cache instanceof EventsAwareInterface === false) {
+                continue;
+            }
+
+            $eventsManager = $cache->getEventsManager();
+            if ($cache->getEventsManager() === null) {
+                $eventsManager = $di->get('eventsManager');
+                $cache->setEventsManager($eventsManager);
+            }
+
+            $this->handlers[$service] = new Events\CacheEventHandler($di, $this->hub, $config);
+
+            $eventsManager->attach($service, $this->handlers[$service]);
+        }
     }
 
     private function attachDb(DiInterface $di, Config $config): void

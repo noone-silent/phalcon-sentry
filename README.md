@@ -54,8 +54,12 @@ You can also pass options to the `getScript()` helper:
 
 ```php
 {{ sentryHelper.getScript(
-    ['new Sentry.BrowserTracing()'],
-    static_url('/js/bundle.tracing.min.js')
+    [
+        'Sentry.browserTracingIntegration()',
+        'Sentry.replayIntegration()',
+        'Sentry.feedbackIntegration()'
+    ],
+    static_url('/js/bundle.tracing.replay.feedback.min.js')
 ) }}
 ```
 

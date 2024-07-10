@@ -6,12 +6,20 @@ declare(strict_types=1);
 //$di = $di ?? \Phalcon\Di\Di::getDefault();
 
 return [
+    // Enable cache tracing
+    'cache'   => true,
     // Enable db query tracing
     'db'      => true,
     // Enable view render tracing
     'view'    => true,
     // Some options for tracing
     'options' => [
+        'cache'      => [
+            'backtrace' => true,
+            'services'  => [
+                'cache',
+            ],
+        ],
         'db'         => [
             'backtrace' => true,
         ],
