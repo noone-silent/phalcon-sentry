@@ -13,6 +13,7 @@ use Throwable;
 
 use function Sentry\getBaggage;
 use function Sentry\getTraceparent;
+use function Sentry\getW3CTraceparent;
 
 class Sentry extends AbstractInjectionAware
 {
@@ -68,6 +69,7 @@ class Sentry extends AbstractInjectionAware
             "\n",
             [
                 '<meta name="sentry-trace" content="' . getTraceparent() . '"/>',
+                '<meta name="trace-parent" content="' . getW3CTraceparent() . '"/>',
                 '<meta name="baggage" content="' . getBaggage() . '"/>',
             ]
         );

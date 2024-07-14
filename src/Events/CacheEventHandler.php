@@ -15,11 +15,11 @@ use Sentry\Tracing\SpanContext;
 
 class CacheEventHandler extends AbstractEventHandler
 {
-    protected const SPAN_OP_GET_ITEM = 'cache.get_item';
-    protected const SPAN_OP_HAS_ITEM = 'cache.has_item';
-    protected const SPAN_OP_DELETE_ITEM = 'cache.delete_item';
-    protected const SPAN_OP_SAVE = 'cache.save';
-    protected const SPAN_OP_CLEAR = 'cache.clear';
+    protected const SPAN_OP_GET_ITEM = 'cache.get';
+    protected const SPAN_OP_HAS_ITEM = 'cache.has';
+    protected const SPAN_OP_DELETE_ITEM = 'cache.remove';
+    protected const SPAN_OP_SAVE = 'cache.put';
+    protected const SPAN_OP_CLEAR = 'cache.flush';
 
     public function beforeSet(Event $event, AbstractCache $cache): void
     {
@@ -81,6 +81,7 @@ class CacheEventHandler extends AbstractEventHandler
         $spanContext->setDescription($event->getData());
         $spanContext->setData(
             [
+                'cache.key'       => $id,
                 'cache.system'    => $this->getDriver($cache),
                 'code.stacktrace' => implode("\n", $backtrace),
             ]
