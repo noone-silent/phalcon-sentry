@@ -75,17 +75,24 @@ class CacheEventHandler extends AbstractEventHandler
         if ($this->getConfig()->path('options.cache.backtrace', true)) {
             $backtrace = $this->getBacktrace();
         }
+        $data = [
+            'cache.key'       => $id,
+            'cache.system'    => $this->getDriver($cache),
+            'code.stacktrace' => implode("\n", $backtrace),
+        ];
+
+        if ($operation === self::SPAN_OP_GET_ITEM) {
+            $data['cache.hit'] = 1;
+            $data['cache.item_size'] = 1;
+        }
+        if ($operation === self::SPAN_OP_SAVE) {
+            $data['cache.item_size'] = 1;
+        }
 
         $spanContext = new SpanContext();
         $spanContext->setOp($operation);
         $spanContext->setDescription($event->getData());
-        $spanContext->setData(
-            [
-                'cache.key'       => $id,
-                'cache.system'    => $this->getDriver($cache),
-                'code.stacktrace' => implode("\n", $backtrace),
-            ]
-        );
+        $spanContext->setData($data);
 
         $this->spans[$id] = $span->startChild($spanContext);
     }
