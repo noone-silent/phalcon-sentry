@@ -15,11 +15,11 @@ use Sentry\Tracing\SpanContext;
 
 class CacheEventHandler extends AbstractEventHandler
 {
-    protected const SPAN_OP_GET_ITEM = 'cache.get';
-    protected const SPAN_OP_HAS_ITEM = 'cache.has';
+    protected const SPAN_OP_GET_ITEM    = 'cache.get';
+    protected const SPAN_OP_HAS_ITEM    = 'cache.has';
     protected const SPAN_OP_DELETE_ITEM = 'cache.remove';
-    protected const SPAN_OP_SAVE = 'cache.put';
-    protected const SPAN_OP_CLEAR = 'cache.flush';
+    protected const SPAN_OP_SAVE        = 'cache.put';
+    protected const SPAN_OP_CLEAR       = 'cache.flush';
 
     public function beforeSet(Event $event, AbstractCache $cache): void
     {
@@ -69,7 +69,7 @@ class CacheEventHandler extends AbstractEventHandler
         }
 
         $data = $event->getData();
-        $id = implode(',', is_array($data) ? $data : [(string)$data]);
+        $id   = implode(',', is_array($data) ? $data : [(string)$data]);
 
         $backtrace = [];
         if ($this->getConfig()->path('options.cache.backtrace', true)) {
@@ -82,7 +82,7 @@ class CacheEventHandler extends AbstractEventHandler
         ];
 
         if ($operation === self::SPAN_OP_GET_ITEM) {
-            $data['cache.hit'] = 1;
+            $data['cache.hit']       = true;
             $data['cache.item_size'] = 1;
         }
         if ($operation === self::SPAN_OP_SAVE) {
@@ -100,7 +100,7 @@ class CacheEventHandler extends AbstractEventHandler
     private function afterEvent(Event $event, AbstractCache $cache): void
     {
         $data = $event->getData();
-        $id = implode(',', is_array($data) ? $data : [(string)$data]);
+        $id   = implode(',', is_array($data) ? $data : [(string)$data]);
 
         $span = $this->spans[$id] ?? null;
         $span?->finish();
