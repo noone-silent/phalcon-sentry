@@ -72,11 +72,11 @@ class ServiceProvider implements ServiceProviderInterface
         }
 
         /** @var Config $options */
-        $options = $config->path('sentry.options', []);
+        $options = $config->path('sentry.options', [])->toArray();
 
         $default = [];
-        foreach ($options->getKeys() as $key) {
-            $default[(string)$key] = $options->get($key);
+        foreach ($options as $key => $value) {
+            $default[(string)$key] = $value;
         }
 
         if (empty($default['dsn']) === true) {
