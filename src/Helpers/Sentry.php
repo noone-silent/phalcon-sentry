@@ -128,7 +128,7 @@ class Sentry extends AbstractInjectionAware
 
         return substr_replace(
             $renderOptions,
-            ', integrations: [' . implode(',', $integrations) . ']}',
+            ', "integrations": [' . implode(',', $integrations) . ']}',
             -1
         );
     }
