@@ -31,7 +31,7 @@ Add the following code to your entry script:
 
 ```php
 $di->register(
-    new Phalcon\Sentry\ServiceProvider(
+    new \Phalcon\Sentry\ServiceProvider(
         $pathTo . '/config/sentry.php'
     )
 );
