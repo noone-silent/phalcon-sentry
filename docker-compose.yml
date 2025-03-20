@@ -1,0 +1,40 @@
+services:
+  php8.0:
+    build:
+      dockerfile: tests/config/docker/Dockerfile
+      context: .
+      args:
+        PHP_VERSION: "8.0"
+    volumes:
+      - ./:/app
+      - ./:/opt/project
+
+  php8.1:
+    build:
+      dockerfile: tests/config/docker/Dockerfile
+      context: .
+      args:
+        PHP_VERSION: "8.1"
+    volumes:
+      - ./:/app
+      - ./:/opt/project
+
+  php8.2:
+    build:
+      dockerfile: tests/config/docker/Dockerfile
+      context: .
+      args:
+        PHP_VERSION: "8.2"
+    volumes:
+      - ./:/app
+      - ./:/opt/project
+
+  php8.3:
+    build:
+      dockerfile: tests/config/docker/Dockerfile
+      context: .
+      args:
+        PHP_VERSION: "8.3"
+    volumes:
+      - ./:/app
+      - ./:/opt/project

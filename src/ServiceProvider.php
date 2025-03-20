@@ -35,7 +35,7 @@ class ServiceProvider implements ServiceProviderInterface
 {
     protected const SPAN_OP_HTTP_SERVER = 'http.server';
 
-    private ?string $configPath;
+    private string | Config | null $configOrPath;
 
     private ?DiInterface $container = null;
 
@@ -44,9 +44,9 @@ class ServiceProvider implements ServiceProviderInterface
     /** @var EventHandlerInterface[] */
     private array $handlers = [];
 
-    public function __construct(?string $configPath = null)
+    public function __construct(string | Config | null $configPath = null)
     {
-        $this->configPath = $configPath;
+        $this->configOrPath = $configPath;
     }
 
     /**
@@ -76,6 +76,7 @@ class ServiceProvider implements ServiceProviderInterface
 
         $default = [];
         foreach ($options as $key => $value) {
+            // @phpstan-ignore-next-line
             $default[(string)$key] = $value;
         }
 
@@ -86,6 +87,7 @@ class ServiceProvider implements ServiceProviderInterface
             );
         }
 
+        // @phpstan-ignore-next-line
         init($default);
         $this->hub = SentrySdk::getCurrentHub();
         register_shutdown_function([$this, 'finish']);
@@ -139,26 +141,32 @@ class ServiceProvider implements ServiceProviderInterface
      */
     protected function mergeConfig(DiInterface $di): Config
     {
+        if ($this->configOrPath instanceof Config) {
+            $di->set('phalcon-sentry.config', $this->configOrPath, true);
+
+            return $this->configOrPath;
+        }
+
         $baseConfig = new Php(__DIR__ . '/config/sentry.php');
-        if ($this->configPath === null) {
+        if ($this->configOrPath === null) {
             return $baseConfig;
         }
 
         if (
-            file_exists($this->configPath) === false ||
-            is_readable($this->configPath) === false
+            file_exists($this->configOrPath) === false ||
+            is_readable($this->configOrPath) === false
         ) {
             throw new RuntimeException(
-                'phalcon-sentry: Config file ' . $this->configPath . ' does not exist or is not readable.'
+                'phalcon-sentry: Config file ' . $this->configOrPath . ' does not exist or is not readable.'
             );
         }
 
-        $parts = explode('.', $this->configPath);
+        $parts     = explode('.', $this->configOrPath);
         $extension = end($parts);
         match ($extension) {
-            'php' => $baseConfig->merge(new Php($this->configPath)),
-            'ini' => $baseConfig->merge(new Ini($this->configPath)),
-            'yml', 'yaml' => $baseConfig->merge(new Yaml($this->configPath)),
+            'php' => $baseConfig->merge(new Php($this->configOrPath)),
+            'ini' => $baseConfig->merge(new Ini($this->configOrPath)),
+            'yml', 'yaml' => $baseConfig->merge(new Yaml($this->configOrPath)),
             default => throw new RuntimeException(
                 'phalcon-sentry: Only .php/.ini/.yml/.yaml config files are supported'
             )
@@ -182,7 +190,7 @@ class ServiceProvider implements ServiceProviderInterface
 
         /** @var RequestInterface $request */
         $request = $di->get('request');
-        $uri = $request->getURI(true);
+        $uri     = $request->getURI(true);
 
         $requestStartTime = (float)$request->getServer('REQUEST_TIME_FLOAT') ?: microtime(true);
 
@@ -227,6 +235,7 @@ class ServiceProvider implements ServiceProviderInterface
             }
 
             // we need at least Phalcon 5.8.* for that
+            // @phpstan-ignore-next-line
             if ($cache instanceof EventsAwareInterface === false) {
                 continue;
             }

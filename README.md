@@ -63,7 +63,7 @@ You can also pass options to the `getScript()` helper:
 ) }}
 ```
 
-> [!NOTICE]
+> [!IMPORTANT]
 > If you do not self-host the sentry browser script,
 > you should add `browser.sentry-cdn.com` to your allowed `script-src`.
 >

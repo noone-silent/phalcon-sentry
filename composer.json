@@ -21,9 +21,11 @@
   "scripts": {
     "phpstan": "vendor/bin/phpstan",
     "phpcs": "vendor/bin/php-cs-fixer fix",
+    "unit": "vendor/bin/codecept run",
     "push-check": [
       "@phpstan",
-      "@phpcs"
+      "@phpcs",
+      "@unit"
     ]
   },
   "autoload": {
