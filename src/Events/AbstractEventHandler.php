@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Sentry\Events;
 
-use Phalcon\Config\Config;
+use Phalcon\Config\ConfigInterface;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\Injectable;
 use Sentry\State\HubInterface;
@@ -15,18 +15,18 @@ class AbstractEventHandler extends Injectable implements EventHandlerInterface
     /** @var Span[] */
     protected array $spans = [];
 
-    protected Config $config;
+    protected ConfigInterface $config;
 
     protected ?HubInterface $hub;
 
-    public function __construct(DiInterface $container, ?HubInterface $hub, Config $config)
+    public function __construct(DiInterface $container, ?HubInterface $hub, ConfigInterface $config)
     {
         $this->container = $container;
         $this->hub = $hub;
         $this->config = $config;
     }
 
-    public function getConfig(): Config
+    public function getConfig(): ConfigInterface
     {
         return $this->config;
     }

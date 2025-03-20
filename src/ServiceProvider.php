@@ -8,8 +8,8 @@ use Phalcon\Cache\AbstractCache;
 use Phalcon\Config\Adapter\Ini;
 use Phalcon\Config\Adapter\Php;
 use Phalcon\Config\Adapter\Yaml;
-use Phalcon\Config\Config;
 use Phalcon\Config\Exception;
+use Phalcon\Config\ConfigInterface;
 use Phalcon\Db\Adapter\Pdo\AbstractPdo;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\ServiceProviderInterface;
@@ -35,7 +35,7 @@ class ServiceProvider implements ServiceProviderInterface
 {
     protected const SPAN_OP_HTTP_SERVER = 'http.server';
 
-    private string | Config | null $configOrPath;
+    private string | ConfigInterface | null $configOrPath;
 
     private ?DiInterface $container = null;
 
@@ -44,7 +44,7 @@ class ServiceProvider implements ServiceProviderInterface
     /** @var EventHandlerInterface[] */
     private array $handlers = [];
 
-    public function __construct(string | Config | null $configPath = null)
+    public function __construct(string | ConfigInterface | null $configPath = null)
     {
         $this->configOrPath = $configPath;
     }
@@ -63,7 +63,7 @@ class ServiceProvider implements ServiceProviderInterface
         $this->boot($di, $config);
     }
 
-    public function boot(DiInterface $di, Config $config): void
+    public function boot(DiInterface $di, ConfigInterface $config): void
     {
         // The event manager is needed to attach listeners to db and view events.
         if ($di->has('eventsManager') === false) {
@@ -71,7 +71,7 @@ class ServiceProvider implements ServiceProviderInterface
             $di->set('eventsManager', $eventsManager, true);
         }
 
-        /** @var Config $options */
+        /** @var array $options */
         $options = $config->path('sentry.options', [])->toArray();
 
         $default = [];
@@ -139,9 +139,9 @@ class ServiceProvider implements ServiceProviderInterface
      *
      * @throws Exception
      */
-    protected function mergeConfig(DiInterface $di): Config
+    protected function mergeConfig(DiInterface $di): ConfigInterface
     {
-        if ($this->configOrPath instanceof Config) {
+        if ($this->configOrPath instanceof ConfigInterface) {
             $di->set('phalcon-sentry.config', $this->configOrPath, true);
 
             return $this->configOrPath;
@@ -207,14 +207,14 @@ class ServiceProvider implements ServiceProviderInterface
         $this->hub?->setSpan($this->hub->startTransaction($context));
     }
 
-    private function attach(DiInterface $di, Config $config): void
+    private function attach(DiInterface $di, ConfigInterface $config): void
     {
         $this->attachCache($di, $config);
         $this->attachDb($di, $config);
         $this->attachView($di, $config);
     }
 
-    private function attachCache(DiInterface $di, Config $config): void
+    private function attachCache(DiInterface $di, ConfigInterface $config): void
     {
         if ($config->get('cache', true) === false || $di->has('cache') === false) {
             return;
@@ -252,7 +252,7 @@ class ServiceProvider implements ServiceProviderInterface
         }
     }
 
-    private function attachDb(DiInterface $di, Config $config): void
+    private function attachDb(DiInterface $di, ConfigInterface $config): void
     {
         if ($config->get('db', true) === false || $di->has('db') === false) {
             return;
@@ -277,7 +277,7 @@ class ServiceProvider implements ServiceProviderInterface
         $eventsManager->attach('db', $this->handlers['db']);
     }
 
-    private function attachView(DiInterface $di, Config $config): void
+    private function attachView(DiInterface $di, ConfigInterface $config): void
     {
         if (
             $config->get('view', true) === false ||
