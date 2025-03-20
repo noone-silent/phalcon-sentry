@@ -13,7 +13,7 @@ This directory contains the PHP source code for the Phalcon Sentry integration.
 ## Installation
 
 ```Bash
-composer install noone-silent/phalcon-sentry
+composer require noone-silent/phalcon-sentry
 ```
 
 ## Usage
