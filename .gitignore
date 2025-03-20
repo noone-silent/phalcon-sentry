@@ -1,3 +1,10 @@
-vendor/
+# IDE
 .idea/
 *.iml
+
+# Codeception
+tests/_output/
+tests/Support/_generated
+
+# composer
+vendor/
