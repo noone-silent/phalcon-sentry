@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Phalcon\Sentry\Helpers;
 
-use Phalcon\Config\Config;
+use Phalcon\Config\ConfigInterface;
 use Phalcon\Di\AbstractInjectionAware;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\View;
@@ -20,9 +20,9 @@ class Sentry extends AbstractInjectionAware
     public const DEFAULT_HELPER_NAME = 'sentryHelper';
     public const DEFAULT_SENTRY_SCRIPT = 'https://browser.sentry-cdn.com/8.7.0/bundle.tracing.replay.feedback.min.js';
 
-    private static Config $config;
+    private static ConfigInterface $config;
 
-    public function __construct(DiInterface $di, View $view, Config $config)
+    public function __construct(DiInterface $di, View $view, ConfigInterface $config)
     {
         self::$config = $config;
 
@@ -85,7 +85,7 @@ class Sentry extends AbstractInjectionAware
             $viewOptions = self::$config->path('sentry.options', []);
         }
 
-        $viewOptions = $viewOptions instanceof Config ? $viewOptions->toArray() : $viewOptions;
+        $viewOptions = $viewOptions instanceof ConfigInterface ? $viewOptions->toArray() : $viewOptions;
         if (count($viewOptions) === 0) {
             return '';
         }

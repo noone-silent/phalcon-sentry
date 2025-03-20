@@ -6,7 +6,7 @@ namespace Unit;
 
 use Codeception\Test\Unit;
 use Phalcon\Config\Adapter\Ini;
-use Phalcon\Config\Config;
+use Phalcon\Config\ConfigInterface;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Sentry\ServiceProvider;
 use Throwable;
@@ -32,7 +32,7 @@ class ServiceProviderTest extends Unit
         $config = $di->getShared('phalcon-sentry.config');
 
         // Assert we have a valid config
-        $this->assertInstanceOf(Config::class, $config);
+        $this->assertInstanceOf(ConfigInterface::class, $config);
         // Assert that we merged all values
         $this->assertEquals($config->path('test.value'), 'test');
     }
@@ -55,7 +55,7 @@ class ServiceProviderTest extends Unit
         $config = $di->getShared('phalcon-sentry.config');
 
         // Assert we have a valid config
-        $this->assertInstanceOf(Config::class, $config);
+        $this->assertInstanceOf(ConfigInterface::class, $config);
         // Assert that we merged all values
         $this->assertEquals($config->path('test.value'), 'test');
     }
