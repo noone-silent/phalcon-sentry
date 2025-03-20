@@ -71,7 +71,7 @@ class ServiceProvider implements ServiceProviderInterface
             $di->set('eventsManager', $eventsManager, true);
         }
 
-        /** @var Config $options */
+        /** @var array $options */
         $options = $config->path('sentry.options', [])->toArray();
 
         $default = [];
