@@ -8,8 +8,8 @@ use Phalcon\Cache\AbstractCache;
 use Phalcon\Config\Adapter\Ini;
 use Phalcon\Config\Adapter\Php;
 use Phalcon\Config\Adapter\Yaml;
-use Phalcon\Config\Exception;
 use Phalcon\Config\ConfigInterface;
+use Phalcon\Config\Exception;
 use Phalcon\Db\Adapter\Pdo\AbstractPdo;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\ServiceProviderInterface;
@@ -71,12 +71,10 @@ class ServiceProvider implements ServiceProviderInterface
             $di->set('eventsManager', $eventsManager, true);
         }
 
-        /** @var array $options */
         $options = $config->path('sentry.options', [])->toArray();
 
         $default = [];
         foreach ($options as $key => $value) {
-            // @phpstan-ignore-next-line
             $default[(string)$key] = $value;
         }
 
@@ -87,7 +85,6 @@ class ServiceProvider implements ServiceProviderInterface
             );
         }
 
-        // @phpstan-ignore-next-line
         init($default);
         $this->hub = SentrySdk::getCurrentHub();
         register_shutdown_function([$this, 'finish']);
@@ -141,14 +138,15 @@ class ServiceProvider implements ServiceProviderInterface
      */
     protected function mergeConfig(DiInterface $di): ConfigInterface
     {
-        if ($this->configOrPath instanceof ConfigInterface) {
-            $di->set('phalcon-sentry.config', $this->configOrPath, true);
-
-            return $this->configOrPath;
-        }
-
         $baseConfig = new Php(__DIR__ . '/config/sentry.php');
         if ($this->configOrPath === null) {
+            return $baseConfig;
+        }
+
+        if ($this->configOrPath instanceof ConfigInterface) {
+            $baseConfig->merge($this->configOrPath);
+            $di->set('phalcon-sentry.config', $baseConfig, true);
+
             return $baseConfig;
         }
 

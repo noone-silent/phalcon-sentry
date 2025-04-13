@@ -34,7 +34,12 @@ class ServiceProviderTest extends Unit
         // Assert we have a valid config
         $this->assertInstanceOf(ConfigInterface::class, $config);
         // Assert that we merged all values
-        $this->assertEquals($config->path('test.value'), 'test');
+        $this->assertEquals('test', $config->path('test.value'));
+        // Assert that the default config got merged and is available
+        $this->assertEquals(
+            'sha384-EdTlDs1y0B2z6oDPxEhsi9MkH/ilAGCs4oLmreRceSbJ2TlSjo5020c315FWNIYJ',
+            $config->path('sentry.browser.sha')
+        );
     }
 
     /**
@@ -57,6 +62,11 @@ class ServiceProviderTest extends Unit
         // Assert we have a valid config
         $this->assertInstanceOf(ConfigInterface::class, $config);
         // Assert that we merged all values
-        $this->assertEquals($config->path('test.value'), 'test');
+        $this->assertEquals('test', $config->path('test.value'));
+        // Assert that the default config got merged and is available
+        $this->assertEquals(
+            'sha384-EdTlDs1y0B2z6oDPxEhsi9MkH/ilAGCs4oLmreRceSbJ2TlSjo5020c315FWNIYJ',
+            $config->path('sentry.browser.sha')
+        );
     }
 }
